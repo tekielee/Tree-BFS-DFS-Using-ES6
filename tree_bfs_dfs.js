@@ -1,11 +1,11 @@
 class TreeNode {
 	constructor(data = null) {
 		this.data = data;
-		this.children = [];
 	}
 	
-	addChildren(node) {
-		this.children.push(node);
+	addChildren(left, right) {
+		this.left = left;
+		this.right = right;
 	}
 }
 
@@ -22,8 +22,13 @@ class Tree {
 		while(!queue.isEmpty()) {
 			let current = queue.dequeue();
 			visited.enqueue(current);
-			for(let i = 0; i < current.children.length; i++) {
-				queue.enqueue(current.children[i]);
+			if(current.left && current.right) {
+				queue.enqueue(current.left);
+				queue.enqueue(current.right);
+			} else if(current.left) {
+				queue.enqueue(current.left);
+			} else if(current.right) {
+				queue.enqueue(current.right);
 			}
 		}
 		return visited;
@@ -31,9 +36,12 @@ class Tree {
 	
 	DFS(node) {
 		this.visited.enqueue(node);
-		if(node.children) {
-			for(let i = 0; i < node.children.length; i++) {
-				this.DFS(node.children[i]);
+		if(node) {
+			if(node.left) {
+				this.DFS(node.left);
+			}
+			if(node.right) {
+				this.DFS(node.right);
 			}
 		}
 	}
@@ -43,22 +51,23 @@ let root = new TreeNode('8');
 let tree = new Tree(root);
 let node1 = new TreeNode('3');
 let node2 = new TreeNode('10');
-root.addChildren(node1);
-root.addChildren(node2);
+root.addChildren(node1, node2);
 
 let node3 = new TreeNode('1');
 let node4 = new TreeNode('6');
+node1.addChildren(node3, node4);
+
 let node5 = new TreeNode('14');
-node1.addChildren(node3);
-node1.addChildren(node4);
-node2.addChildren(node5);
+node2.addChildren(null, node5);
 
 let node6 = new TreeNode('4');
 let node7 = new TreeNode('7');
+node4.addChildren(node6, node7);
+
 let node8 = new TreeNode('13');
-node4.addChildren(node6);
-node4.addChildren(node7);
-node5.addChildren(node8);
+node5.addChildren(node8, null);
+
+console.log(root);
 
 let visitedBFS = tree.BFS(tree.root);
 while(!visitedBFS.isEmpty()) {
